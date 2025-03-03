@@ -1,0 +1,13 @@
+prefix=/Users/kasish/Desktop/ML_PROJECT_LOGGING/venv
+exec_prefix=/Users/kasish/Desktop/ML_PROJECT_LOGGING/venv
+libdir=/Users/kasish/Desktop/ML_PROJECT_LOGGING/venv/lib
+sharedlibdir=/Users/kasish/Desktop/ML_PROJECT_LOGGING/venv/lib
+includedir=/Users/kasish/Desktop/ML_PROJECT_LOGGING/venv/include
+
+Name: zlib
+Description: zlib compression library
+Version: 1.2.13
+
+Requires:
+Libs: -L${libdir} -L${sharedlibdir} -lz
+Cflags: -I${includedir}
