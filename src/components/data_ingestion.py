@@ -26,7 +26,7 @@ class DataIngestion:
             df.columns = df.columns.str.replace(r'[\s\(\)]', '_', regex=True)\
                        .str.replace(r'_+', '_', regex=True)\
                        .str.strip('_')
-            logging.info(f"{df.head()}")
+            logging.info(f"{df['Oral_Cancer_Diagnosis'].value_counts()}")
             logging.info('Dataset read as DataFrame')
 
             os.makedirs(os.path.dirname(self.ingestion_config.train_data_path), exist_ok=True)

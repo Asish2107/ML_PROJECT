@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import LabelEncoder, StandardScaler
+from imblearn.over_sampling import SMOTE  # Added for class imbalance handling
 from src.exception import CustomException
 from src.logger import logging
 import os
@@ -24,6 +25,10 @@ class DataTransformation:
             target_column = "Oral_Cancer_Diagnosis"
             numerical_columns = ['Age', 'Tumor_Size_cm']
             categorical_columns = ['Country', 'Gender', 'Tobacco_Use', 'Alcohol_Consumption', 'Betel_Quid_Use']
+
+            # === Check Class Imbalance
+            class_distribution = train_df[target_column].value_counts()
+            logging.info(f"Class Distribution in Training Set: \n{class_distribution}")
 
             # === Split input/target
             X_train = train_df.drop(columns=[target_column]).copy()
@@ -58,6 +63,11 @@ class DataTransformation:
             y_train = target_le.fit_transform(y_train)
             y_test = target_le.transform(y_test)
             label_encoders[target_column] = target_le
+
+            # === Handle Class Imbalance using SMOTE
+            smote = SMOTE(random_state=42)
+            X_train, y_train = smote.fit_resample(X_train, y_train)
+            logging.info(f"After SMOTE: {np.bincount(y_train)}")  # Log class distribution
 
             # === Final arrays
             train_arr = np.c_[X_train.values, y_train.reshape(-1, 1)]
