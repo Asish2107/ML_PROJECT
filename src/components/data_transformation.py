@@ -2,10 +2,8 @@ import sys
 from dataclasses import dataclass
 import numpy as np
 import pandas as pd
-from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OneHotEncoder, StandardScaler, LabelEncoder
+from sklearn.preprocessing import LabelEncoder, StandardScaler
 from src.exception import CustomException
 from src.logger import logging
 import os
@@ -13,73 +11,67 @@ from src.utils import save_object
 
 @dataclass
 class DataTransformationConfig:
-    preprocessor_obj_file_path = os.path.join('artifacts', "preprocessor.pkl")
+    preprocessor_obj_file_path = os.path.join('artifacts', "preprocess.pkl")
 
 class DataTransformation:
     def __init__(self):
-        self.data_transformation_config = DataTransformationConfig()
-
-    def get_data_transformer_object(self):
-        try:
-            numerical_columns = ['ID', 'Age', 'Tumor Size (cm)', 'Cancer Stage',
-                                 'Survival Rate (5-Year, %)', 'Cost of Treatment (USD)',
-                                 'Economic Burden (Lost Workdays per Year)']
-            categorical_columns = [
-                'Country', 'Gender', 'Tobacco Use', 'Alcohol Consumption', 'HPV Infection',
-                'Betel Quid Use', 'Chronic Sun Exposure', 'Poor Oral Hygiene',
-                'Diet (Fruits & Vegetables Intake)', 'Family History of Cancer',
-                'Compromised Immune System', 'Oral Lesions', 'Unexplained Bleeding',
-                'Difficulty Swallowing', 'White or Red Patches in Mouth',
-                'Treatment Type', 'Early Diagnosis'
-            ]
-
-            num_pipeline = Pipeline(steps=[
-                ("imputer", SimpleImputer(strategy="median")),
-                ("scaler", StandardScaler())
-            ])
-
-            cat_pipeline = Pipeline(steps=[
-                ("imputer", SimpleImputer(strategy="most_frequent")),
-                ("one_hot_encoder", OneHotEncoder()),
-                ("scaler", StandardScaler(with_mean=False))
-            ])
-
-            preprocessor = ColumnTransformer([
-                ("num_pipeline", num_pipeline, numerical_columns),
-                ("cat_pipeline", cat_pipeline, categorical_columns)
-            ])
-            return preprocessor
-
-        except Exception as e:
-            raise CustomException(e, sys)
+        self.config = DataTransformationConfig()
 
     def initiate_data_transformation(self, train_path, test_path):
         try:
             train_df = pd.read_csv(train_path)
             test_df = pd.read_csv(test_path)
+            target_column = "Oral_Cancer_Diagnosis"
+            numerical_columns = ['Age', 'Tumor_Size_cm']
+            categorical_columns = ['Country', 'Gender', 'Tobacco_Use', 'Alcohol_Consumption', 'Betel_Quid_Use']
 
-            preprocessing_obj = self.get_data_transformer_object()
+            # === Split input/target
+            X_train = train_df.drop(columns=[target_column]).copy()
+            y_train = train_df[target_column].copy()
+            X_test = test_df.drop(columns=[target_column]).copy()
+            y_test = test_df[target_column].copy()
 
-            target_column = "Oral Cancer (Diagnosis)"
-            input_feature_train_df = train_df.drop(columns=[target_column])
-            target_feature_train_df = train_df[[target_column]]
+            # === Impute numerical
+            num_imputer = SimpleImputer(strategy='median')
+            X_train[numerical_columns] = num_imputer.fit_transform(X_train[numerical_columns])
+            X_test[numerical_columns] = num_imputer.transform(X_test[numerical_columns])
 
-            input_feature_test_df = test_df.drop(columns=[target_column])
-            target_feature_test_df = test_df[[target_column]]
+            # === Scale numerical
+            scaler = StandardScaler()
+            X_train[numerical_columns] = scaler.fit_transform(X_train[numerical_columns])
+            X_test[numerical_columns] = scaler.transform(X_test[numerical_columns])
 
-            input_feature_train_arr = preprocessing_obj.fit_transform(input_feature_train_df)
-            input_feature_test_arr = preprocessing_obj.transform(input_feature_test_df)
+            # === Encode categorical
+            label_encoders = {}
+            for col in categorical_columns:
+                cat_imputer = SimpleImputer(strategy='most_frequent')
+                X_train[col] = cat_imputer.fit_transform(X_train[[col]]).ravel()
+                X_test[col] = cat_imputer.transform(X_test[[col]]).ravel()
 
-            label_encoder = LabelEncoder()
-            target_feature_train_df[target_column] = label_encoder.fit_transform(target_feature_train_df[target_column])
-            target_feature_test_df[target_column] = label_encoder.transform(target_feature_test_df[target_column])
+                le = LabelEncoder()
+                X_train[col] = le.fit_transform(X_train[col])
+                X_test[col] = le.transform(X_test[col])
+                label_encoders[col] = le
 
-            train_arr = np.c_[input_feature_train_arr, target_feature_train_df]
-            test_arr = np.c_[input_feature_test_arr, target_feature_test_df]
+            # === Encode target
+            target_le = LabelEncoder()
+            y_train = target_le.fit_transform(y_train)
+            y_test = target_le.transform(y_test)
+            label_encoders[target_column] = target_le
 
-            save_object(self.data_transformation_config.preprocessor_obj_file_path, preprocessing_obj)
+            # === Final arrays
+            train_arr = np.c_[X_train.values, y_train.reshape(-1, 1)]
+            test_arr = np.c_[X_test.values, y_test.reshape(-1, 1)]
 
-            return train_arr, test_arr, self.data_transformation_config.preprocessor_obj_file_path
+            # === Save ONE combined preprocessor object
+            preprocess_obj = {
+                'scaler': scaler,
+                'label_encoders': label_encoders
+            }
+            save_object(self.config.preprocessor_obj_file_path, preprocess_obj)
+
+            logging.info("Data transformation complete. Preprocessor saved successfully.")
+            return train_arr, test_arr, self.config.preprocessor_obj_file_path
 
         except Exception as e:
             raise CustomException(e, sys)

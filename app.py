@@ -24,10 +24,10 @@ def predict_datapoint():
             Country=request.form.get('Country'),
             Age=request.form.get('Age'),
             Gender=request.form.get('Gender'),
-            Tobacco_Use=request.form.get('Tobacco Use'),
-            Tumor_size=request.form.get('Tumor Size (cm)'),
-            Alcohol_Consumption=request.form.get('Alcohol Consumption'),
-            Betel_Quid_Use=request.form.get('Betel Quid Use')
+            Tobacco_Use=request.form.get('Tobacco_Use'),
+            Tumor_size=request.form.get('Tumor_size'),
+            Alcohol_Consumption=request.form.get('Alcohol_Consumption'),
+            Betel_Quid_Use=request.form.get('Betel_Quid_Use')
         )
         pred_df=data.get_data_as_data_frame()
         print(pred_df)

@@ -74,8 +74,8 @@
     <div class="container">
         <h1>Oral Cancer Detection</h1>
         <form action="{{ url_for('predict_datapoint') }}" method="post">
-            <label for="country">Country</label>
-            <select name="country" required>
+            <label for="Country">Country</label>
+            <select name="Country" required>
                 <option disabled selected>Select your Country</option>
                 <option value="Italy">Italy</option>
                 <option value="Japan">Japan</option>
@@ -96,35 +96,35 @@
                 <option value="India">India</option>
             </select>
 
-            <label for="age">Age</label>
-            <input type="number" name="age" placeholder="Enter Age" min="0" max="120" required>
+            <label for="Age">Age</label>
+            <input type="number" name="Age" placeholder="Enter Age" min="0" max="120" required>
 
-            <label for="gender">Gender</label>
-            <select name="gender" required>
+            <label for="Gender">Gender</label>
+            <select name="Gender" required>
                 <option disabled selected>Select Gender</option>
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
             </select>
 
-            <label for="tobacco_use">Tobacco Use</label>
-            <select name="tobacco_use" required>
+            <label for="Tobacco_Use">Tobacco_Use</label>
+            <select name="Tobacco_Use" required>
                 <option disabled selected>Select Tobacco Usage</option>
                 <option value="Yes">Yes</option>
                 <option value="No">No</option>
             </select>
 
-            <label for="tumor_size">Tumor Size (in cm)</label>
-            <input type="number" name="tumor_size" step="0.01" placeholder="Enter Tumor Size" required>
+            <label for="Tumor_size">Tumor Size (in cm)</label>
+            <input type="number" name="Tumor_size" step="0.01" placeholder="Enter Tumor Size" required>
 
-            <label for="alcohol_consumption">Alcohol Consumption</label>
-            <select name="alcohol_consumption" required>
+            <label for="Alcohol_Consumption">Alcohol_Consumption</label>
+            <select name="Alcohol_Consumption" required>
                 <option disabled selected>Select Alcohol Consumption</option>
                 <option value="Yes">Yes</option>
                 <option value="No">No</option>
             </select>
 
-            <label for="betel_quid_use">Betel Quid Use</label>
-            <select name="betel_quid_use" required>
+            <label for="Betel_Quid_Use">Betel_Quid_Use</label>
+            <select name="Betel_Quid_Use" required>
                 <option disabled selected>Select Betel Quid Usage</option>
                 <option value="Yes">Yes</option>
                 <option value="No">No</option>

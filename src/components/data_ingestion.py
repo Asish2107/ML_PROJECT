@@ -22,6 +22,11 @@ class DataIngestion:
         logging.info("Entered the data ingestion method")
         try:
             df = pd.read_csv('notebook/data/data_set.csv')
+            df= df.drop(columns= ['ID', 'Cancer Stage', 'Survival Rate (5-Year, %)', 'Cost of Treatment (USD)', 'Economic Burden (Lost Workdays per Year)', 'HPV Infection', 'Chronic Sun Exposure', 'Poor Oral Hygiene', 'Diet (Fruits & Vegetables Intake)', 'Family History of Cancer', 'Compromised Immune System', 'Oral Lesions', 'Unexplained Bleeding', 'Difficulty Swallowing', 'White or Red Patches in Mouth', 'Treatment Type', 'Early Diagnosis'])
+            df.columns = df.columns.str.replace(r'[\s\(\)]', '_', regex=True)\
+                       .str.replace(r'_+', '_', regex=True)\
+                       .str.strip('_')
+            logging.info(f"{df.head()}")
             logging.info('Dataset read as DataFrame')
 
             os.makedirs(os.path.dirname(self.ingestion_config.train_data_path), exist_ok=True)
