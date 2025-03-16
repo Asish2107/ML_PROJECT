@@ -35,9 +35,13 @@ def predict_datapoint():
 
         predict_pipeline=PredictPipeline()
         print("Mid Prediction")
-        results=predict_pipeline.predict(pred_df)
+        predict=predict_pipeline.predict(pred_df)
+        if predict[0] == 'YES':
+            results = "Patient is diagnosed with Oral Cancer"
+        else:
+            results = "Patient is not diagnosed with Oral Cancer"
         print("after Prediction")
-        return render_template('home.html',results=results[0])
+        return render_template('home.html',results=results)
     
 
 if __name__=="__main__":
