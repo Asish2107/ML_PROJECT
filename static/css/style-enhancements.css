@@ -1,0 +1,139 @@
+/* Background & Effects */
+body {
+    background: linear-gradient(135deg, #6CB4EE 0%, #7ED957 50%, #FF6B35 100%);
+    background-attachment: fixed;
+    position: relative;
+    overflow-x: hidden;
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #2a2a2a;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: -50px;
+    left: -50px;
+    width: 150%;
+    height: 150%;
+    background: url('/static/assets/particles.svg') no-repeat center center / cover;
+    opacity: 0.05;
+    z-index: 0;
+    animation: rotateBg 100s linear infinite;
+}
+
+@keyframes rotateBg {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Container */
+.container {
+    max-width: 620px;
+    margin: 80px auto;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    position: relative;
+    z-index: 2;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.container:hover {
+    transform: scale(1.02);
+    box-shadow: 0 12px 40px rgba(110, 180, 238, 0.5);
+}
+
+/* Heading */
+h1 {
+    text-align: center;
+    font-size: 2.4rem;
+    margin-bottom: 10px;
+    text-shadow: 0 0 10px #6CB4EE, 0 0 20px #7ED957;
+    animation: glowText 2s ease-in-out infinite alternate;
+}
+
+@keyframes glowText {
+    from { text-shadow: 0 0 5px #6CB4EE; }
+    to { text-shadow: 0 0 20px #7ED957; }
+}
+
+/* Form Styling */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+form label {
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #222;
+}
+
+form input[type="text"],
+form select {
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+form input:focus,
+form select:focus {
+    outline: none;
+    border-color: #6CB4EE;
+    box-shadow: 0 0 12px #6CB4EE;
+    animation: pulse 1.2s infinite alternate;
+}
+
+@keyframes pulse {
+    from { box-shadow: 0 0 10px #6CB4EE; }
+    to { box-shadow: 0 0 20px #FF6B35; }
+}
+
+/* Submit Button */
+.submit-btn {
+    width: 100%;
+    padding: 14px;
+    margin-top: 10px;
+    background: linear-gradient(to right, #7ED957, #FF6B35);
+    border: none;
+    border-radius: 14px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #2a2a2a;
+    box-shadow: 0 0 12px #6CB4EE;
+    transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+.submit-btn:hover {
+    transform: scale(1.05);
+    background: linear-gradient(to right, #6CB4EE, #7ED957);
+}
+
+/* Prediction Result */
+.result {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 20px;
+    color: #FF6B35;
+    animation: fadeInResult 1s ease-in-out;
+}
+
+@keyframes fadeInResult {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
